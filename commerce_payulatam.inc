@@ -31,8 +31,8 @@ function commerce_payulatam_get_reference($alias, $order_id) {
  */
 function commerce_payulatam_get_firm($settings, $state_transation = "") {
   $params = array(
-    $settings['po_encryption_key'],
-    $settings['po_uid'],
+    $settings['py_api_key'],
+    $settings['py_merchant_id'],
     $settings['sale_reference'],
     $settings['amount'],
     $settings['currency_code'],

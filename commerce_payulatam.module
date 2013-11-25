@@ -106,15 +106,14 @@ function commerce_payulatam_settings_form($settings = NULL) {
     '#default_value' => isset($settings['py_tax']) ? $settings['py_tax'] : NULL,
   );
 
-  $py_alias = isset($settings['py_alias']) ? $settings['py_alias'] : COMMERCE_PAYULATAM_ALIAS;
-  $form['po_alias'] = array(
+  $form['py_alias'] = array(
     '#title' => t('Alias'),
     '#description' => t('Is concatenated with the order number, example: @example', array(
       '@example' => '"' . $py_alias . '1"',
     )),
     '#type' => 'textfield',
     '#size' => 20,
-    '#default_value' => $py_alias,
+    '#default_value' => isset($settings['py_alias']) ? $settings['py_alias'] : COMMERCE_PAYULATAM_ALIAS,
   );
 
   $description = isset($settings['py_description']) ? $settings['py_description'] : COMMERCE_PAYULATAM_DESCRIPTION;
