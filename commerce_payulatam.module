@@ -43,7 +43,7 @@ function commerce_payulatam_settings_form($settings = NULL) {
 
   $form['py_api_key'] = array(
     '#type' => 'textfield',
-    '#title' => t('API Id'),
+    '#title' => t('API KEY'),
     '#required' => TRUE,
     '#default_value' => isset($settings['py_api_key']) ? $settings['py_api_key'] : NULL,
   );
@@ -61,16 +61,16 @@ function commerce_payulatam_settings_form($settings = NULL) {
     '#default_value' => isset($settings['py_account_id']) ? $settings['py_account_id'] : NULL,
   );
 
-  $po_action = COMMERCE_PAYULATAM_URL_PRODUCTION;
-  if (isset($settings['py_action_url'])) {
-    $po_action = $settings['py_action_url'];
+  $py_action = COMMERCE_PAYULATAM_URL_PRODUCTION;
+  if (isset($settings['py_action_url_production'])) {
+    $py_action = $settings['py_action_url_production'];
   }
 
   $form['py_action_url_production'] = array(
     '#title' => t('Path Form Action'),
     '#type' => 'textfield',
     '#size' => 50,
-    '#default_value' => $po_action,
+    '#default_value' => $py_action,
     '#required' => TRUE,
   );
 
