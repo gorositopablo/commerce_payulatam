@@ -57,7 +57,7 @@ function commerce_payulatam_access_page($order, $token, $option, $page) {
  * Validate signature generate from PAYULATAM.
  */
 function commerce_payulatam_validate_signature($method, $order) {
-  module_load_include('inc', 'commerce_pagosonline');
+  module_load_include('inc', 'commerce_payulatam');
   
   $instance_id = $order->data['payment_method'];
   $payment_method = commerce_payment_method_instance_load($instance_id);
