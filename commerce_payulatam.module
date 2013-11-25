@@ -45,17 +45,20 @@ function commerce_payulatam_settings_form($settings = NULL) {
     '#type' => 'textfield',
     '#title' => t('Merchant Id'),
     '#required' => TRUE,
+    '#default_value' => isset($settings['py_api_key']) ? $settings['py_api_key'] : NULL,
   );
 
   $form['py_merchant_id'] = array(
     '#type' => 'textfield',
     '#title' => t('Merchant Id'),
     '#required' => TRUE,
+    '#default_value' => isset($settings['py_merchant_id']) ? $settings['py_merchant_id'] : NULL,
   );
 
   $form['py_account_id'] = array(
     '#type' => 'textfield',
     '#title' => t('Account Id'),
+    '#default_value' => isset($settings['py_account_id']) ? $settings['py_account_id'] : NULL,
   );
 
   $po_action = COMMERCE_PAYULATAM_URL_PRODUCTION;
