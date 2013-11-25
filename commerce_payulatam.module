@@ -106,6 +106,7 @@ function commerce_payulatam_settings_form($settings = NULL) {
     '#default_value' => isset($settings['py_tax']) ? $settings['py_tax'] : NULL,
   );
 
+  $py_alias = isset($settings['py_alias']) ? $settings['py_alias'] : COMMERCE_PAYULATAM_ALIAS;
   $form['py_alias'] = array(
     '#title' => t('Alias'),
     '#description' => t('Is concatenated with the order number, example: @example', array(
@@ -113,7 +114,7 @@ function commerce_payulatam_settings_form($settings = NULL) {
     )),
     '#type' => 'textfield',
     '#size' => 20,
-    '#default_value' => isset($settings['py_alias']) ? $settings['py_alias'] : COMMERCE_PAYULATAM_ALIAS,
+    '#default_value' => $py_alias,
   );
 
   $description = isset($settings['py_description']) ? $settings['py_description'] : COMMERCE_PAYULATAM_DESCRIPTION;
@@ -219,7 +220,7 @@ function commerce_payulatam_redirect_form($form, &$form_state, $order, $payment_
   $url_page = commerce_payulatam_get_url($order->order_id);
 
 
-  $form['#action'] = $settings['po_action_url'];
+  $form['#action'] = $settings['py_action_url_production'];
 
   $description = t($settings['po_description'], array(
     '@order_id' => $order->order_id,
@@ -251,9 +252,9 @@ function commerce_payulatam_redirect_form($form, &$form_state, $order, $payment_
   );
 
   // Mode Test.
-  if (@$settings['po_testing']) {
-    $data['prueba'] = 1;
-    $form['#action'] = $settings['po_action_url_test'];
+  if (@$settings['py_testing']) {
+    $data['test'] = 1;
+    $form['#action'] = $settings['py_action_url_test'];
   }
 
   foreach ($data as $name => $value) {
