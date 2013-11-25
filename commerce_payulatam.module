@@ -28,7 +28,7 @@ function commerce_payulatam_commerce_payment_method_info() {
     'description' => t('PAYULATAM Payments Standard'),
     'terminal' => FALSE,
     'offsite' => TRUE,
-    'offsite_autoredirect' => TRUE,
+    'offsite_autoredirect' => FALSE,
   );
 
   return $payment_methods;
@@ -55,7 +55,7 @@ function commerce_payulatam_settings_form($settings = NULL) {
 
   $form['py_account_id'] = array(
     '#type' => 'textfield',
-    '#title' => t('Reference Code'),
+    '#title' => t('Account Id'),
   );
 
   $po_action = COMMERCE_PAYULATAM_URL_PRODUCTION;
