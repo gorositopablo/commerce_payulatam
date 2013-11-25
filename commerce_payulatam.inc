@@ -5,9 +5,9 @@
 function commerce_payulatam_get_url($order_id) {
   $token = uniqid();
 
-  $url_response = COMMERCE_PAYULATAM_URL_RESPONSE . '/' . $order_id . '/' . $token . '/' . commerce_pagosonline_get_md5($order_id, $token, 'RESPONSE');
+  $url_response = COMMERCE_PAYULATAM_URL_RESPONSE . '/' . $order_id . '/' . $token . '/' . commerce_payulatam_get_md5($order_id, $token, 'RESPONSE');
 
-  $url_confirmation = COMMERCE_PAYULATAM_URL_CONFIRMATION . '/' . $order_id . '/' . $token . '/' . commerce_pagosonline_get_md5($order_id, $token);
+  $url_confirmation = COMMERCE_PAYULATAM_URL_CONFIRMATION . '/' . $order_id . '/' . $token . '/' . commerce_payulatam_get_md5($order_id, $token);
 
   return array(
     'response' => url($url_response, array(
@@ -41,4 +41,11 @@ function commerce_payulatam_get_firm($settings, $state_transation = "") {
     $params[] = $state_transation;
   }
   return md5(implode('~', $params));
+}
+
+/**
+ * Encrypted key.
+ */
+function commerce_payulatam_get_md5($order_id, $token, $type = 'CONFIRMATION') {
+  return md5($order_id . '~' . strtoupper($type) . '~' . $token);
 }
