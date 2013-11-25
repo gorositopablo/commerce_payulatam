@@ -181,7 +181,7 @@ function commerce_payulatam_redirect_form($form, &$form_state, $order, $payment_
     return array();
   }
 
-  module_load_include('inc', 'commerce_pagosonline');
+  module_load_include('inc', 'commerce_payulatam');
 
   $wrapper = entity_metadata_wrapper('commerce_order', $order);
 
