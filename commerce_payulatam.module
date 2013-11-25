@@ -103,7 +103,7 @@ function commerce_payulatam_settings_form($settings = NULL) {
     '#size' => 5,
     '#multiple' => TRUE,
     '#options' => $options,
-    '#default_value' => isset($settings['py_tax']) ? $settings['po_tax'] : NULL,
+    '#default_value' => isset($settings['py_tax']) ? $settings['py_tax'] : NULL,
   );
 
   $py_alias = isset($settings['py_alias']) ? $settings['py_alias'] : COMMERCE_PAYULATAM_ALIAS;
