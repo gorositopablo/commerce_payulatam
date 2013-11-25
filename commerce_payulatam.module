@@ -43,7 +43,7 @@ function commerce_payulatam_settings_form($settings = NULL) {
 
   $form['py_api_key'] = array(
     '#type' => 'textfield',
-    '#title' => t('Merchant Id'),
+    '#title' => t('API Id'),
     '#required' => TRUE,
     '#default_value' => isset($settings['py_api_key']) ? $settings['py_api_key'] : NULL,
   );
@@ -66,7 +66,7 @@ function commerce_payulatam_settings_form($settings = NULL) {
     $po_action = $settings['py_action_url'];
   }
 
-  $form['py_action_url'] = array(
+  $form['py_action_url_production'] = array(
     '#title' => t('Path Form Action'),
     '#type' => 'textfield',
     '#size' => 50,
@@ -146,30 +146,6 @@ function commerce_payulatam_settings_form($settings = NULL) {
 function commerce_payulatam_signature() { 
 }
 
-function commerce_payulatam_money() {
-  // $money = array(
-  //   'ARS' => 'Peso Argentino',
-  //   'BRL' => 'Real Brasileño',
-  //   'COP' => 'Peso Colombiano',
-  //   'MXN' => 'Peso Mexicano'
-  //   'PEN' => 'Nuevo Sol Peruano'
-  //   'USD' => 'Dólar Americano',
-}
-
-function commerce_payulatam_state() {
-  // return array(
-  //   '1' => CAPTURING_DATA  Capturando datos.
-  // 2 NEW Estado inicial de la transacción.
-  // 101 FX_CONVERTED  Retornado por el conversor de monedas, indicando la modificación realizada.
-  // 102 VERIFIED  Indica que la transacción fue evaluada por nuestro módulo antifraude.>
-  // 103 SUBMITTED Movimiento fue enviado para su procesamiento al proveedor de pago.
-  // 4 APPROVED  La transacción fue aprobada por la entidad financiera.
-  // 6 DECLINED  Transacción Declinada o Abandonada.
-  // 104 ERROR Se presentó un error con el medio de pago externo.
-  // 7 PENDING Operación pendiente de finalización.
-  // 5 EXPIRED Transacción expiró, por superar el tiempo límite de respuesta.
-}
-
 /**
  * Add parameters method pagosonline
  */
@@ -222,7 +198,7 @@ function commerce_payulatam_redirect_form($form, &$form_state, $order, $payment_
 
   $form['#action'] = $settings['py_action_url_production'];
 
-  $description = t($settings['po_description'], array(
+  $description = t($settings['py_description'], array(
     '@order_id' => $order->order_id,
   ));
 
