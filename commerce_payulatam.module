@@ -71,18 +71,50 @@ function commerce_payulatam_settings_form($settings = NULL) {
     '#required' => TRUE,
   );
 
-  $po_action_test = COMMERCE_PAYULATAM_URL_TEST;
-  if (isset($settings['po_action_url_test'])) {
-    $po_action_test = $settings['po_action_url_test'];
+  $py_action_test = COMMERCE_PAYULATAM_URL_TEST;
+  if (isset($settings['py_action_url_test'])) {
+    $py_action_test = $settings['py_action_url_test'];
   }
 
   $form['py_action_url_test'] = array(
     '#title' => t('Test Path Form Action'),
     '#type' => 'textfield',
     '#size' => 50,
-    '#default_value' => $po_action_test,
+    '#default_value' => $py_action_test,
     '#required' => TRUE,
   );
+
+  $items = array();
+  if (function_exists('commerce_tax_rates')) {
+    $items = commerce_tax_rates();
+  }
+
+  $options = array();
+  foreach ($items as $name => $item) {
+    $options[$name] = $item['title'];
+  }
+
+  $form['py_tax'] = array(
+    '#title' => t('Tax Rate'),
+    '#type' => 'select',
+    '#size' => 5,
+    '#multiple' => TRUE,
+    '#options' => $options,
+    '#default_value' => isset($settings['py_tax']) ? $settings['po_tax'] : NULL,
+  );
+
+  $py_alias = isset($settings['py_alias']) ? $settings['py_alias'] : COMMERCE_PAYULATAM_ALIAS;
+  $form['po_alias'] = array(
+    '#title' => t('Alias'),
+    '#description' => t('Is concatenated with the order number, example: @example', array(
+      '@example' => '"' . $py_alias . '1"',
+    )),
+    '#type' => 'textfield',
+    '#size' => 20,
+    '#default_value' => $py_alias,
+  );
+
+  $description = isset($settings['py_description']) ? $settings['py_description'] : COMMERCE_PAYULATAM_DESCRIPTION;
 
   $form['py_description'] = array(
     '#title' => t('Description'),
@@ -112,13 +144,13 @@ function commerce_payulatam_signature() {
 }
 
 function commerce_payulatam_money() {
-  $money = array(
-    'ARS' => 'Peso Argentino',
-    'BRL' => 'Real Brasileño',
-    'COP' => 'Peso Colombiano',
-    'MXN' => 'Peso Mexicano'
-    'PEN' => 'Nuevo Sol Peruano'
-    'USD' => 'Dólar Americano',
+  // $money = array(
+  //   'ARS' => 'Peso Argentino',
+  //   'BRL' => 'Real Brasileño',
+  //   'COP' => 'Peso Colombiano',
+  //   'MXN' => 'Peso Mexicano'
+  //   'PEN' => 'Nuevo Sol Peruano'
+  //   'USD' => 'Dólar Americano',
 }
 
 function commerce_payulatam_state() {
