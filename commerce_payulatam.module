@@ -14,6 +14,68 @@ define('COMMERCE_PAYULATAM_MERCHANTID', 500238);
 define('COMMERCE_PAYULTAM_APIKEY', '6u39nqhq8ftd0hlvnjfs66eh8c');
 
 define('COMMERCE_PAYULATAM_ALIAS', 'PYLATAM-');
+/**
+ * Implements hook_menu().
+ */
+function commerce_payulatam_menu() {
+  $menu = array();
+
+  $menu[COMMERCE_PAYULATAM_URL_RESPONSE . '/%commerce_order/%/%'] = array(
+    'page callback' => 'commerce_pagosonline_response',
+    'page arguments' => array(2),
+    'access callback' => 'commerce_payulatam_access_page',
+    'access arguments' => array(2, 3, 4, 1),
+    'type' => MENU_CALLBACK,
+    'file' => 'commerce_pagosonline.inc',
+  );
+
+  $menu[COMMERCE_PAYULATAM_URL_CONFIRMATION . '/%commerce_order/%/%'] = array(
+    'page callback' => 'commerce_pagosonline_confirmation',
+    'page arguments' => array(2),
+    'access callback' => 'commerce_payulatam_access_page',
+    'access arguments' => array(2, 3, 4, 1),
+    'type' => MENU_CALLBACK,
+    'file' => 'commerce_pagosonline.inc',
+  );
+
+  return $menu;
+}
+
+/**
+ * Access callback page confirmation/response.
+ */
+function commerce_payulatam_access_page($order, $token, $option, $page) {
+  
+  $method = ($page == 'confirmation' ? $_POST : $_GET);
+
+  $is_valid = commerce_payulatam_validate_signature($method, $order);
+
+  return $option == commerce_payulatam_get_md5($order->order_id, $token, $page) && $is_valid;
+}
+
+/**
+ * Validate signature generate from PAYULATAM.
+ */
+function commerce_payulatam_validate_signature($method, $order) {
+  module_load_include('inc', 'commerce_pagosonline');
+  
+  $instance_id = $order->data['payment_method'];
+  $payment_method = commerce_payment_method_instance_load($instance_id);
+
+  $param = commerce_payulatam_get_param($method);
+  
+  $settings = array(
+    'py_api_key' => $payment_method['settings']['py_api_key'],
+    'py_merchant_id' => $payment_method['settings']['py_merchant_id'],
+    'sale_reference' => $param['referenceCode'],
+    'amount' => $param['TX_VALUE'],
+    'currency_code' => $param['currency'],
+  );
+
+  $signature = commerce_payulatam_get_firm($settings, $param['polResponseCode']);
+
+  return $param['firma'] == strtoupper($signature);
+}
 
 /**
  * Implements hook_commerce_payment_method_info().

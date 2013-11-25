@@ -29,7 +29,7 @@ function commerce_payulatam_get_reference($alias, $order_id) {
 /**
  * Digital signature of the transaction.
  */
-function commerce_payulatam_get_firm($settings, $state_transation = "") {
+function commerce_payulatam_get_firm($settings, $state_transation = NULL) {
   $params = array(
     $settings['py_api_key'],
     $settings['py_merchant_id'],
@@ -37,9 +37,11 @@ function commerce_payulatam_get_firm($settings, $state_transation = "") {
     $settings['amount'],
     $settings['currency_code'],
   );
-  if (!empty($state_transation)) {
+
+  if ($state_transation) {
     $params[] = $state_transation;
   }
+  
   return md5(implode('~', $params));
 }
 
@@ -48,4 +50,17 @@ function commerce_payulatam_get_firm($settings, $state_transation = "") {
  */
 function commerce_payulatam_get_md5($order_id, $token, $type = 'CONFIRMATION') {
   return md5($order_id . '~' . strtoupper($type) . '~' . $token);
+}
+
+/**
+ * Load parameters.
+ */
+function commerce_payulatam_get_param($target) {
+  $param = array();
+  if (is_array($target)) {
+    foreach ($target as $key => $value) {
+      $param[$key] = check_plain($target[$key]);
+    }
+  }
+  return $param;
 }
