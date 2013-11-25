@@ -74,6 +74,8 @@ function commerce_payulatam_validate_signature($method, $order) {
     'currency_code' => $param['currency'],
   );
 
+  dpm($settings);
+
   $signature = commerce_payulatam_get_firm($settings, $param['polResponseCode']);
 
   return $param['signature'] == strtoupper($signature);
