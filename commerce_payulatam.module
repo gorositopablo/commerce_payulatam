@@ -231,6 +231,7 @@ function commerce_payulatam_redirect_form($form, &$form_state, $order, $payment_
     'merchantId' => $settings['py_merchant_id'],
     'referenceCode' => $settings['sale_reference'],
     'description' => $description,
+    'accountId' => $settings['py_account_id'],
 
     'amount' => $settings['amount'],
     'tax' => 0,
