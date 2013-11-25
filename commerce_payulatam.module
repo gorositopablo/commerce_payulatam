@@ -74,7 +74,7 @@ function commerce_payulatam_validate_signature($method, $order) {
 
   $signature = commerce_payulatam_get_firm($settings, $param['polResponseCode']);
 
-  return $param['firma'] == strtoupper($signature);
+  return $param['signature'] == strtoupper($signature);
 }
 
 /**
