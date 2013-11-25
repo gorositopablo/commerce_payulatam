@@ -143,9 +143,6 @@ function commerce_payulatam_settings_form($settings = NULL) {
   return $form;
 }
 
-function commerce_payulatam_signature() { 
-}
-
 /**
  * Add parameters method pagosonline
  */
@@ -210,9 +207,9 @@ function commerce_payulatam_redirect_form($form, &$form_state, $order, $payment_
     'accountId' => $settings['py_account_id'],
 
     'amount' => $settings['amount'],
-    'tax' => 0,
+    'tax' => $taxes['total'],
 
-    'taxReturnBase' => $taxes['total'] > 0 ? $taxes['base_price'] : 0,
+    'taxReturnBase' => $taxes['base_price'],
 
     'signature' => $signature,
 
