@@ -70,13 +70,13 @@ function commerce_payulatam_validate_signature($method, $order) {
     'py_api_key' => $payment_method['settings']['py_api_key'],
     'py_merchant_id' => $payment_method['settings']['py_merchant_id'],
     'sale_reference' => $param['referenceCode'],
-    'amount' => $param['TX_VALUE'],
+    'amount' => number_format($param['TX_VALUE'], 1, '.',''),
     'currency_code' => $param['currency'],
   );
 
   dpm($settings);
 
-  $signature = commerce_payulatam_get_firm($settings, $param['polResponseCode']);
+  $signature = commerce_payulatam_get_firm($settings, $param['transactionState']);
 
   return $param['signature'] == strtoupper($signature);
 }
