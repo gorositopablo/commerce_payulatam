@@ -10,18 +10,10 @@
 function commerce_payulatam_response($order) {
   $param = commerce_payulatam_get_param($_GET);
 
-  //$message = 'Thanks for your purchase. We are awaiting confirmation from PayuLatam. Once the payment has been aproved, you will get more information about your order.';
-  //$path = '<front>';
-
   if($param['transactionState'] == 6 && $param['polResponseCode'] == 5) {
-    
-    //commerce_payment_redirect_pane_previous_page($order);
-    //$path = commerce_checkout_order_uri($order);
     $message = 'Failed transaction';
   }
   else if($param['transactionState'] == 6 && $param['polResponseCode'] == 4) {
-    //commerce_payment_redirect_pane_previous_page($order);
-    //$path = commerce_checkout_order_uri($order);
     $message = 'Transaction rejected';
   }
   else if($param['transactionState'] == 12 && $param['polResponseCode'] == 9994) {
@@ -37,7 +29,7 @@ function commerce_payulatam_response($order) {
   $rows = array(
     array(t('Transaction state'), $message),
     array(t('Transaction ID'), $param['transactionId']),
-    array(t('Sale reference'), $param),
+    array(t('Sale reference'), $param['reference_pol']),
     array(t('Transaction Reference'), $param['referenceCode']),
     array(t('Ammount'), number_format($param['TX_VALUE'])),
     array(t('Currency'), $param['currency']),
