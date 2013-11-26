@@ -248,7 +248,7 @@ function commerce_payulatam_redirect_form($form, &$form_state, $order, $payment_
 
   $amount = $wrapper->commerce_order_total->amount->value();
 
-  $settings['amount'] = number_format(commerce_currency_amount_to_decimal($amount, $currency_code), 2, '.', '');
+  $settings['amount'] = number_format(commerce_currency_amount_to_decimal($amount, $currency_code), 1, '.', '');
 
   // Tax.
   $taxes = array(
