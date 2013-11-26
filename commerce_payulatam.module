@@ -257,12 +257,12 @@ function commerce_payulatam_redirect_form($form, &$form_state, $order, $payment_
   );
 
   $components = $wrapper->commerce_order_total->data->value();
-  if ($settings['po_tax'] && @$components['components']) {
+  if ($settings['py_tax'] && @$components['components']) {
     foreach ($components['components'] as $key => $component) {
       if ($component['name'] == 'base_price') {
         $taxes['base_price'] = $component['price']['amount'];
       }
-      elseif (in_array($component['price']['data']['tax_rate']['name'], $settings['po_tax'])) {
+      elseif (in_array($component['price']['data']['tax_rate']['name'], $settings['py_tax'])) {
         $taxes['total'] += $component['price']['amount'];
       }
     }
