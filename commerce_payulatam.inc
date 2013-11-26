@@ -8,7 +8,7 @@
  * Page response.
  */
 function commerce_payulatam_response($order) {
-  $param = commerce_pagosonline_get_param($_GET);
+  $param = commerce_payulatam_get_param($_GET);
 
   //$message = 'Thanks for your purchase. We are awaiting confirmation from PayuLatam. Once the payment has been aproved, you will get more information about your order.';
   //$path = '<front>';
