@@ -59,19 +59,22 @@ function commerce_payulatam_confirmation($order) {
   $param = commerce_pagosonline_get_param($_POST);
   $transaction = array();
   
-  if ($param['estado_pol'] == 5) {
-    commerce_payment_redirect_pane_previous_page($order);
-  }
-  else {
+  // if ($param['estado_pol'] == 5) {
+  //   commerce_payment_redirect_pane_previous_page($order);
+  // }
+  // else {
     $transaction = commerce_payulatam_save_transation($param, $order);
     if ($transaction->status == COMMERCE_PAYMENT_STATUS_SUCCESS) {
       commerce_payment_redirect_pane_next_page($order);
     }
-  }
+    elseif ($transaction->status == COMMERCE_PAYMENT_STATUS_FAILURE) {
+      commerce_payment_redirect_pane_previous_page($order);
+    }
+  // }
 
   module_invoke_all('commerce_payulatam_confirmation', $order, $transaction);
   $result = array(
-    'estate' => TRUE,
+    'state' => TRUE,
   );
   drupal_json_output($result);
 }
@@ -80,7 +83,7 @@ function commerce_payulatam_confirmation($order) {
  * Save transaction.
  */
 function commerce_payulatam_save_transation($param, $order) {
-  
+
   $result = db_insert('commerce_payulatam')
     ->fields(array(
       'order_id' => $order->order_id,
@@ -92,13 +95,13 @@ function commerce_payulatam_save_transation($param, $order) {
     ))
     ->execute();
 
-  if ($param['cus'] == 'null') {
-    $param['cus'] = 0;
-  }
+  // if ($param['cus'] == 'null') {
+  //   $param['cus'] = 0;
+  // }
 
-  $path_transation = 'pagosonline/transaction/view/' . $result . '/' . md5($result . '~' . 'VIEW-TRANSATION');
+  //$path_transation = 'pagosonline/transaction/view/' . $result . '/' . md5($result . '~' . 'VIEW-TRANSATION');
 
-  $transaction = commerce_payment_transaction_new('pagosonline', $order->order_id);
+  $transaction = commerce_payment_transaction_new('payulatam', $order->order_id);
 
   $transaction->payload[REQUEST_TIME] = $param;
 
@@ -106,29 +109,23 @@ function commerce_payulatam_save_transation($param, $order) {
 
   $transaction->remote_id = $param['transaccion_id'];
 
-  $txt_state = commerce_pagosonline_transaction_state($param['estado_pol']);
-  $txt_reponse = commerce_pagosonline_response_code($param['codigo_respuesta_pol']);
+  //$txt_state = commerce_pagosonline_transaction_state($param['estado_pol']);
 
-  $transaction->remote_status = $txt_state . ' - ' . $txt_reponse;
+  //$txt_reponse = commerce_pagosonline_response_code($param['codigo_respuesta_pol']);
 
-  $message[] = $param['estado_pol'] . ': ' . $txt_state;
-  $message[] = $param['codigo_respuesta_pol'] . ': ' . $txt_reponse;
-  $message[] = l(t('View transaction'), $path_transation);
+  $transaction->remote_status = $param['response_message_pol '];
+
+  //$message[] = $param['estado_pol'] . ': ' . $txt_state;
+  //$message[] = $param['codigo_respuesta_pol'] . ': ' . $txt_reponse;
+  //$message[] = l(t('View transaction'), $path_transation);
 
 
-  switch ($param['estado_pol']) {
+  switch ($param['state_pol']) {
     case 4:
       $transaction->status = COMMERCE_PAYMENT_STATUS_SUCCESS;
       break;
 
     case 7:
-    case 10:
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
-    case 16:
       $transaction->status = COMMERCE_PAYMENT_STATUS_PENDING;
       break;
 
@@ -137,10 +134,10 @@ function commerce_payulatam_save_transation($param, $order) {
   }
 
   $transaction->instance_id = $param['extra1'];
-  $exchange_money = $param['valor'] / $param['tasa_cambio'];
-  $amount = commerce_currency_decimal_to_amount($exchange_money, $param['moneda']);
+  $exchange_money = $param['value'] / $param['exchange_rate'];
+  $amount = commerce_currency_decimal_to_amount($exchange_money, $param['currency']);
   $transaction->amount = $amount;
-  $transaction->currency_code = $param['moneda'];
+  $transaction->currency_code = $param['currency'];
   $transaction->message = implode('<br />', $message);
   commerce_payment_transaction_save($transaction);
 

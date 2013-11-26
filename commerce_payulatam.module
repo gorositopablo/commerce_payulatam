@@ -86,7 +86,7 @@ function commerce_payulatam_validate_signature($method, $order, $page) {
     case 'confirmation':
       $settings += array(
         'sale_reference' => $param['reference_sale'],
-        'amount' => $param['value'],
+        'amount' => number_format($param['value'], 1, '.',''),
       );
       $state = $param['state_pol'];
       break;
