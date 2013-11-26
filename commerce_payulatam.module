@@ -26,7 +26,7 @@ function commerce_payulatam_menu() {
     'access callback' => 'commerce_payulatam_access_page',
     'access arguments' => array(2, 3, 4, 1),
     'type' => MENU_CALLBACK,
-    'file' => 'commerce_pagosonline.inc',
+    'file' => 'commerce_payulatam.inc',
   );
 
   $menu[COMMERCE_PAYULATAM_URL_CONFIRMATION . '/%commerce_order/%/%'] = array(
@@ -35,7 +35,7 @@ function commerce_payulatam_menu() {
     'access callback' => 'commerce_payulatam_access_page',
     'access arguments' => array(2, 3, 4, 1),
     'type' => MENU_CALLBACK,
-    'file' => 'commerce_pagosonline.inc',
+    'file' => 'commerce_payulatam.inc',
   );
 
   return $menu;
@@ -63,8 +63,6 @@ function commerce_payulatam_validate_signature($method, $order) {
   $payment_method = commerce_payment_method_instance_load($instance_id);
 
   $param = commerce_payulatam_get_param($method);
-
-  dpm($param);
   
   $settings = array(
     'py_api_key' => $payment_method['settings']['py_api_key'],
@@ -73,8 +71,6 @@ function commerce_payulatam_validate_signature($method, $order) {
     'amount' => number_format($param['TX_VALUE'], 1, '.',''),
     'currency_code' => $param['currency'],
   );
-
-  dpm($settings);
 
   $signature = commerce_payulatam_get_firm($settings, $param['transactionState']);
 

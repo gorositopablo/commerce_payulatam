@@ -1,5 +1,88 @@
 <?php
 /**
+ * @file
+ * API payment pagosonline
+ */
+
+/**
+ * Page response.
+ */
+function commerce_payulatam_response($order) {
+  $param = commerce_pagosonline_get_param($_GET);
+
+  //$message = 'Thanks for your purchase. We are awaiting confirmation from PayuLatam. Once the payment has been aproved, you will get more information about your order.';
+  //$path = '<front>';
+
+  if($param['transactionState'] == 6 && $param['polResponseCode'] == 5) {
+    
+    //commerce_payment_redirect_pane_previous_page($order);
+    //$path = commerce_checkout_order_uri($order);
+    $message = 'Failed transaction';
+  }
+  else if($param['transactionState'] == 6 && $param['polResponseCode'] == 4) {
+    //commerce_payment_redirect_pane_previous_page($order);
+    //$path = commerce_checkout_order_uri($order);
+    $message = 'Transaction rejected';
+  }
+  else if($param['transactionState'] == 12 && $param['polResponseCode'] == 9994) {
+    $message = 'Pending, Please check whether the debit was made in the Bank';
+  }
+  else if($param['transactionState'] == 4 && $param['polResponseCode'] == 1) {
+    $message = 'Transaction approved';
+  }
+  else {
+    $message = $param['mensaje'];
+  }
+
+  $rows = array(
+    array(t('Transaction state'), $message),
+    array(t('Transaction ID'), $param['transactionId']),
+    array(t('Sale reference'), $param),
+    array(t('Transaction Reference'), $param['referenceCode']),
+    array(t('Ammount'), number_format($param['TX_VALUE'])),
+    array(t('Currency'), $param['currency']),
+    array(t('Description'), $param['description']),
+    array(t('Entity'), $param['lapPaymentMethod']),
+  );
+
+  if ($param['pseBank']) {
+    $rows[] = array(t('CUS'), $param['cus']);
+    $rows[] = array(t('Bank'), $param['pseBank']);
+  }
+
+  $content['table'] = array(
+    '#theme' => 'table',
+    '#rows' => $rows,
+  );
+
+  return $content;
+}
+
+/**
+ * Page confirmation.
+ */
+function commerce_pagosonline_confirmation($order) {
+  $param = commerce_pagosonline_get_param($_POST);
+  $transaction = array();
+  
+  if ($param['estado_pol'] == 5) {
+    commerce_payment_redirect_pane_previous_page($order);
+  }
+  else {
+    $transaction = commerce_pagosonline_save_transation($param, $order);
+    if ($transaction->status == COMMERCE_PAYMENT_STATUS_SUCCESS) {
+      commerce_payment_redirect_pane_next_page($order);
+    }
+  }
+
+  module_invoke_all('commerce_payulatam_confirmation', $order, $transaction);
+  $result = array(
+    'estate' => TRUE,
+  );
+  drupal_json_output($result);
+}
+
+/**
  * Generate url response and confirmation.
  */
 function commerce_payulatam_get_url($order_id) {
@@ -41,7 +124,7 @@ function commerce_payulatam_get_firm($settings, $state_transation = NULL) {
   if ($state_transation) {
     $params[] = $state_transation;
   }
-  
+
   return md5(implode('~', $params));
 }
 
