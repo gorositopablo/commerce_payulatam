@@ -38,7 +38,7 @@ function commerce_payulatam_menu() {
     'file' => 'commerce_payulatam.inc',
   );
 
-  return $menu;
+  return $items;
 }
 
 /**
