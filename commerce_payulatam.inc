@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * API payment pagosonline
+ * API payment payulatam
  */
 
 /**
@@ -47,13 +47,15 @@ function commerce_payulatam_response($order) {
     '#rows' => $rows,
   );
 
+  drupal_alter('commerce_payulatam_response', $content, $param);
+
   return $content;
 }
 
 /**
  * Page confirmation.
  */
-function commerce_pagosonline_confirmation($order) {
+function commerce_payulatam_confirmation($order) {
   $param = commerce_pagosonline_get_param($_POST);
   $transaction = array();
   

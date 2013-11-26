@@ -1,26 +1,25 @@
 <?php
+/**
+ * @file
+ * Implements payulatam.com payment services for use with Drupal Commerce.
+ */
+
 define('COMMERCE_PAYULATAM_URL_PRODUCTION', 'https://gateway.payulatam.com/ppp-web-gateway/');
 define('COMMERCE_PAYULATAM_URL_TEST', 'https://stg.gateway.payulatam.com/ppp-web-gateway');
-
-
 define('COMMERCE_PAYULATAM_URL_CONFIRMATION', 'payulatam/confirmation');
 define('COMMERCE_PAYULATAM_URL_RESPONSE', 'payulatam/response');
-
 define('COMMERCE_PAYULATAM_DESCRIPTION', 'Commerce virtual store purchase order number @order_id');
-
-
 define('COMMERCE_PAYULATAM_MERCHANTID', 500238);
-
 define('COMMERCE_PAYULTAM_APIKEY', '6u39nqhq8ftd0hlvnjfs66eh8c');
-
 define('COMMERCE_PAYULATAM_ALIAS', 'PYLATAM-');
+
 /**
  * Implements hook_menu().
  */
 function commerce_payulatam_menu() {
-  $menu = array();
+  $items = array();
 
-  $menu[COMMERCE_PAYULATAM_URL_RESPONSE . '/%commerce_order/%/%'] = array(
+  $items[COMMERCE_PAYULATAM_URL_RESPONSE . '/%commerce_order/%/%'] = array(
     'title' => 'Transaction summary',
     'page callback' => 'commerce_payulatam_response',
     'page arguments' => array(2),
@@ -30,7 +29,7 @@ function commerce_payulatam_menu() {
     'file' => 'commerce_payulatam.inc',
   );
 
-  $menu[COMMERCE_PAYULATAM_URL_CONFIRMATION . '/%commerce_order/%/%'] = array(
+  $items[COMMERCE_PAYULATAM_URL_CONFIRMATION . '/%commerce_order/%/%'] = array(
     'page callback' => 'commerce_pagosonline_confirmation',
     'page arguments' => array(2),
     'access callback' => 'commerce_payulatam_access_page',
