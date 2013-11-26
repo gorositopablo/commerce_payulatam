@@ -81,6 +81,7 @@ function commerce_payulatam_validate_signature($method, $order, $page) {
         'amount' => number_format($param['TX_VALUE'], 1, '.',''),
       );
       $state = $param['transactionState'];
+      $key = 'signature';
       break;
 
     case 'confirmation':
@@ -89,11 +90,13 @@ function commerce_payulatam_validate_signature($method, $order, $page) {
         'amount' => number_format($param['value'], 1, '.',''),
       );
       $state = $param['state_pol'];
+      $key = 'sign';
       break;
   }
+
   $signature = commerce_payulatam_get_firm($settings, $state);
 
-  return $param['signature'] == $signature;
+  return $param[$key] == $signature;
 }
 
 /**
