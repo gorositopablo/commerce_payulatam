@@ -30,7 +30,7 @@ function commerce_payulatam_menu() {
   );
 
   $items[COMMERCE_PAYULATAM_URL_CONFIRMATION . '/%commerce_order/%/%'] = array(
-    'page callback' => 'commerce_pagosonline_confirmation',
+    'page callback' => 'commerce_payulatam_confirmation',
     'page arguments' => array(2),
     'access callback' => 'commerce_payulatam_access_page',
     'access arguments' => array(2, 3, 4, 1),
@@ -48,7 +48,11 @@ function commerce_payulatam_access_page($order, $token, $option, $page) {
   
   $method = ($page == 'confirmation' ? $_POST : $_GET);
 
-  $is_valid = commerce_payulatam_validate_signature($method, $order);
+  if ($page == 'confirmation') {
+    cache_set('Result', $method);
+  }
+
+  $is_valid = commerce_payulatam_validate_signature($method, $order, $page);
 
   return $option == commerce_payulatam_get_md5($order->order_id, $token, $page) && $is_valid;
 }
@@ -56,7 +60,7 @@ function commerce_payulatam_access_page($order, $token, $option, $page) {
 /**
  * Validate signature generate from PAYULATAM.
  */
-function commerce_payulatam_validate_signature($method, $order) {
+function commerce_payulatam_validate_signature($method, $order, $page) {
   module_load_include('inc', 'commerce_payulatam');
   
   $instance_id = $order->data['payment_method'];
@@ -67,12 +71,27 @@ function commerce_payulatam_validate_signature($method, $order) {
   $settings = array(
     'py_api_key' => $payment_method['settings']['py_api_key'],
     'py_merchant_id' => $payment_method['settings']['py_merchant_id'],
-    'sale_reference' => $param['referenceCode'],
-    'amount' => number_format($param['TX_VALUE'], 1, '.',''),
     'currency_code' => $param['currency'],
   );
 
-  $signature = commerce_payulatam_get_firm($settings, $param['transactionState']);
+  switch ($page) {
+    case 'response':
+      $settings += array(
+        'sale_reference' => $param['referenceCode'],
+        'amount' => number_format($param['TX_VALUE'], 1, '.',''),
+      );
+      $state = $param['transactionState'];
+      break;
+
+    case 'confirmation':
+      $settings += array(
+        'sale_reference' => $param['reference_sale'],
+        'amount' => $param['value'],
+      );
+      $state = $param['state_pol'];
+      break;
+  }
+  $signature = commerce_payulatam_get_firm($settings, $state);
 
   return $param['signature'] == $signature;
 }
